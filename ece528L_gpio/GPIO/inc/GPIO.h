@@ -48,6 +48,8 @@ extern const uint8_t PMOD_8LD_ALL_OFF;
 extern const uint8_t PMOD_8LD_ALL_ON;
 extern const uint8_t PMOD_8LD_0_3_ON;
 extern const uint8_t PMOD_8LD_4_7_ON;
+extern const uint8_t PMOD_8LD_EVEN_ON;
+extern const uint8_t PMOD_8LD_ODD_ON;
 
 /**
  * @brief The LED1_Init function initializes the built-in red LED (P1.0).
@@ -313,13 +315,32 @@ uint8_t Get_PMOD_SWT_Status(void);
 void LED_Pattern_1(uint8_t button_status);
 
 /**
- * @brief The LED_Pattern_2 function controls the user LEDs and the eight LEDs on the PMOD 8LD module.
+ * @brief The LED_Pattern_1 function controls the user LEDs and the eight LEDs on the PMOD 8LD module.
  *
  * This function turns on LED1 with a red color, sets the RGB LED to display a red color,
  * and then initiates a binary counter pattern on the PMOD 8LD module. The counter starts from 0
  * and increments up to 255 (0xFF) with a delay of 100 ms between each count. The sequence stops if
  * a specific switch status is detected or if led_count has reached 0xFF.
  *
+ * This function performs per the
+ *
+ *  button_status          LED 1 Status        RGB LED Status       PMOD 8LD
+ *  -------------          -----------         -------------      -----------
+ *      0x00              Toggles every       Green, Toggles       All off
+ * Button1 and Button2      1 second          every 1 second
+ *   are pressed
+ *------------------------------------------------------------------------------
+ *      0x10                  ON                    Off          LEDs 0,2,4,6:ON
+ * Button1 is pressed                                            LEDs 1,3,5,7:OFF
+ *Button2 is not pressed
+ *------------------------------------------------------------------------------
+ *      0x02                  Off                  BLUE          LEDs 0,2,4,6:OFF
+ *Button1 is not pressed                                         LEDs 1,3,5,7:ON
+ * Button2 is pressed
+ * ------------------------------------------------------------------------------
+ *      0x12                  On                   Off            LEDs 0-7:ON
+ *Button 1 and Button 2
+ * are not pressed
  *
  * @param None
  *
@@ -337,6 +358,90 @@ void LED_Pattern_2(void);
  *                      the LED pattern in some cases.
  * @param switch_status An 8-bit unsigned integer representing the status of the switches on the PMOD SWT. This value is used
  *                      to select the LED pattern to execute.
+ *
+ * This function turns on LED 1, displays a blue color on the RGB LED, and output an 8-bit binary down pattern on the
+ * PMODmodule that counts down from 255 to 0. The delay rate for each count is 100ms. This function is called only when
+ * SWT2 is enable. This sequence stops when any other switches are enabled.
+ *
+ * @return None
+ */
+void LED_Pattern_3(void);
+
+/**
+ * @brief The LED_Controller function selects and executes an appropriate LED pattern based on button and switch statuses.
+ *
+ * This function determines the LED pattern to execute based on the given button status and switch status.
+ * It calls different pattern functions based on the switch status value.
+ *
+ * @param button_status An 8-bit unsigned integer representing the status of the user buttons. This value is used to determine
+ *                      the LED pattern in some cases.
+ * @param switch_status An 8-bit unsigned integer representing the status of the switches on the PMOD SWT. This value is used
+ *                      to select the LED pattern to execute.
+ *
+ * This function generates a ring counter pattern by setting one bit every iteration. In the first iteration, the least
+ * significant bit is set to 1. Then, for every iteration, the "1" bit shifts to the left, rotating through every bit position
+ * until it returns to the original position. The delay rate for each iteration is 200ms. This function is called only
+ * when SWT3 is enabled. The sequence stops when other switches are enabled.
+ *
+ * @return None
+ */
+void LED_Pattern_4(void);
+
+/**
+ * @brief The LED_Controller function selects and executes an appropriate LED pattern based on button and switch statuses.
+ *
+ * This function determines the LED pattern to execute based on the given button status and switch status.
+ * It calls different pattern functions based on the switch status value.
+ *
+ * @param button_status An 8-bit unsigned integer representing the status of the user buttons. This value is used to determine
+ *                      the LED pattern in some cases.
+ * @param switch_status An 8-bit unsigned integer representing the status of the switches on the PMOD SWT. This value is used
+ *                      to select the LED pattern to execute.
+ *
+ * This function generates a ring counter pattern by setting one bit every iteration. In the first iteration, the least
+ * significant bit is set to 1. Then, for every iteration, the "1" bit shifts to the left, rotating through every bit
+ * position until it returns to the original position. The delay rate for each iteration is 200ms. This function is called
+ * only when SWT4 is enabled. The sequence stops when other switches are enabled.
+ *
+ * @return None
+ */
+void LED_Pattern_5(void);
+
+/**
+ * @brief The LED_Controller function selects and executes an appropriate LED pattern based on button and switch statuses.
+ *
+ * This function determines the LED pattern to execute based on the given button status and switch status.
+ * It calls different pattern functions based on the switch status value.
+ *
+ * @param button_status An 8-bit unsigned integer representing the status of the user buttons. This value is used to determine
+ *                      the LED pattern in some cases.
+ * @param switch_status An 8-bit unsigned integer representing the status of the switches on the PMOD SWT. This value is used
+ *                      to select the LED pattern to execute.
+ *
+ * This function generates a ring counter pattern by setting one bit every iteration. In the first iteration, the most
+ * significant bit is set to 1. Then, for every iteration, the "1" bit shifts to the right, rotating through every bit
+ * position until it returns to the original position. The delay rate for each iteration is 200ms. This function is called
+ * only when SWT4 is enabled. The sequence stops when other switches are enabled.
+ *
+ * @return None
+ */
+void Johnson_Counter(void);
+
+/**
+ * @brief The LED_Controller function selects and executes an appropriate LED pattern based on button and switch statuses.
+ *
+ * This function determines the LED pattern to execute based on the given button status and switch status.
+ * It calls different pattern functions based on the switch status value.
+ *
+ * @param button_status An 8-bit unsigned integer representing the status of the user buttons. This value is used to determine
+ *                      the LED pattern in some cases.
+ * @param switch_status An 8-bit unsigned integer representing the status of the switches on the PMOD SWT. This value is used
+ *                      to select the LED pattern to execute.
+ *
+ * This function generates an 8-bit Johnson counter pattern. It starts the sequence at all zeroes and updates the pattern by
+ * shifting left by one bit and inserting the inverted previous MSB into Bit 0. The delay rate for each iteration should be
+ * 200ms. This function is called only when SWT0 and SWT1 are enable, while all other switches are disabled. The sequence
+ * stops when other switches are being used.
  *
  * @return None
  */
