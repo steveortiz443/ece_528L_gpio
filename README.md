@@ -23,13 +23,11 @@ This lab introduced the general concepts surrounding the General-Purpose Input/O
 
 ## 3. Analysis and Results
 
-Following the intial procedures set in section 5, has led to the following Oscilloscope captures and terminal output.
+The lab provided detailed instructions revolving how to observe the data contained within certain registers used in the operation of this lab.
 
 ## 4. Known Issues or Limitations
 
 The main limitation surrounding the lab was a principle lack of understanding surrounding the syntax used for C. Namely the initial concepts used for referencing pointers, and utilizing them to alter bits. Once a comprehensive review of previously recorded lectures, notes, and staring session of the code had been completed, understanding soon followed.
-
-The 
 
 ## 6. References
 
